@@ -1,6 +1,6 @@
 
 /**
- * 画面タッチでカラフルな線を描く
+ * ルーレットの作成
  * ------------------------------
  */
 var drawing = false
@@ -11,12 +11,22 @@ var ctx = canvas.getContext('2d')
 var rect_size = 200
 var start_x = 100
 var start_y = 300
-var base_x = start_x-(rect_size/2-(20+62.5))
-var base_y = start_y-(rect_size/2+47.5)
+var count = 0
+var base_x = start_x-(rect_size/2-(20+62.5)) // fontのhight 125
+var base_y = start_y-(rect_size/2+47.5) // fontのhight 95
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
+
+var startTime
+var endTime
+
+
+startTime = new Date()
+
+
 function resize() {
-	canvas.setAttribute('width', window.innerWidth*2)
-	canvas.setAttribute('height', window.innerHeight*2)
+    canvas.setAttribute('width', window.innerWidth*2)
+    canvas.setAttribute('height', window.innerHeight*2)
+    
 	ctx.font = '30px serif'
 	ctx.fillText('ルーレット', 20, 40)
     
@@ -37,9 +47,31 @@ function resize() {
         ctx.rect(base_x+rect_size*i,base_y+rect_size,rect_size,rect_size)
         ctx.stroke()
     }
+    // coloring
+    ctx.font = '125px serif'
+    ctx.lineWidth = 5
+    console.log(figures[count])
+    ctx.fillText(figures[count], start_x+rect_size*count, start_y+rect_size*3)
+    ctx.rect(base_x+rect_size*count,base_y+rect_size*3,rect_size,rect_size)
+    ctx.stroke()
+    
     ctx.scale(2, 2)
 }
+
+function log(){
+    console.log(count)
+    count += 1
+    if (count > 4){
+        count = 0
+    }
+}
+setInterval(log,1000)
+setInterval(resize,1000)
+
+
+// time & color change
 resize()
 window.addEventListener('resize', resize)
 window.addEventListener('orientationchange', resize)
+
 
