@@ -15,12 +15,35 @@ var count = 0
 var base_x = start_x-(rect_size/2-(20+62.5)) // fontのhight 125
 var base_y = start_y-(rect_size/2+47.5) // fontのhight 95
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
+/*
+var figures = [" 1"," 1"," 1"," 1"," 1",
+               "10","10","10"," 9"," 9",
+               " 9"," 9"," 8"," 8"," 7"]*/
+
+var period = (6.2 * 10000) / 256
+var now_period
+//var period = 1000
+var time_line = [0,0,0,0,0,
+                 1,1,1,1,2,
+                 2,2,3,3,4]
+
 
 var startTime
 var endTime
 
-
-startTime = new Date()
+function sleep(msec) {
+    return new Promise(function(resolve) {
+                       
+                       setTimeout(function() {resolve()}, msec)
+                       
+                       })
+}
+async function start() {
+    
+    await sleep(1000);
+    console.log(1000);
+    
+}
 
 
 function resize() {
@@ -48,25 +71,36 @@ function resize() {
         ctx.stroke()
     }
     // coloring
+    var count_line = time_line[count]
+    var k = Math.floor(count_line / 5)
+    var u = count_line % 5
     ctx.font = '125px serif'
     ctx.lineWidth = 5
-    console.log(figures[count])
-    ctx.fillText(figures[count], start_x+rect_size*count, start_y+rect_size*3)
-    ctx.rect(base_x+rect_size*count,base_y+rect_size*3,rect_size,rect_size)
-    ctx.stroke()
+    //console.log(figures[count_line])
+    ctx.fillText(figures[count_line], start_x+rect_size*u, start_y+rect_size*(3+k))
+    ctx.fillStyle = 'rgba(192,80,77,0.7)'
+    ctx.fillRect(base_x+rect_size*u,base_y+rect_size*(3+k),rect_size,rect_size)
+    //ctx.fill()
     
+    // coloring
+    ctx.fillStyle = 'rgba(12,180,177,0.6)'
+    ctx.font = '125px serif'
+    ctx.lineWidth = 5
+    ctx.fillRect(base_x+rect_size*u,base_y+rect_size*k,rect_size,rect_size)
     ctx.scale(2, 2)
 }
 
 function log(){
-    console.log(count)
     count += 1
-    if (count > 4){
+    console.log(count)
+    
+    if (count >14){
         count = 0
     }
 }
-setInterval(log,1000)
-setInterval(resize,1000)
+
+setInterval(log,150)
+setInterval(resize,10)
 
 
 // time & color change
