@@ -15,18 +15,23 @@ var count = 0
 var base_x = start_x-(rect_size/2-(20+62.5)) // fontのhight 125
 var base_y = start_y-(rect_size/2+47.5) // fontのhight 95
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
-/*
-var figures = [" 1"," 1"," 1"," 1"," 1",
-               "10","10","10"," 9"," 9",
-               " 9"," 9"," 8"," 8"," 7"]*/
-
-var period = (6.2 * 10000) / 256
+var period = (6.2 * 1000) / 256
 var now_period
-//var period = 1000
+var slot_time = [64,3,11,13,13,25,25,25,38,39] // 1,10,9,8,7,6,5,4,3,2
+var time_line = []
+
+/*
 var time_line = [0,0,0,0,0,
                  1,1,1,1,2,
                  2,2,3,3,4]
 
+*/
+for(var i=0;i<10;i++){
+    now_period = slot_time[i]
+    for(var k=0;k<now_period;k++){
+        time_line.push(i)
+    }
+}
 
 var startTime
 var endTime
@@ -94,13 +99,13 @@ function log(){
     count += 1
     console.log(count)
     
-    if (count >14){
+    if (count >255){
         count = 0
     }
 }
 
-setInterval(log,150)
-setInterval(resize,10)
+setInterval(log,period)
+setInterval(resize,period)
 
 
 // time & color change
