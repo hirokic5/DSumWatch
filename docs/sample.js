@@ -67,10 +67,9 @@ function button_start(position){
         mouseY = (e.clientY - button.top) * h_scale
 		if(x < mouseX && mouseX < x + width){
 			if(y < mouseY && mouseY < y + height){
-				if(!count_flag){
-					count_flag = true;
-                    console.log("falseになった")
-                }
+                count_flag = true;
+                count = 0
+                state_flag = 0
 			}
         }
         
@@ -220,12 +219,13 @@ function resize() {
     ctx.fillText("RESET", start_x+rect_size*botton_x, start_y+rect_size*(botton_y))
     ctx.fillRect(b_reset_list[0],b_reset_list[1],b_reset_list[2],b_reset_list[3])
     // restart
+    /*
     ctx.fillStyle = 'rgba(32,180,177,0.6)'
     ctx.font = '40px serif'
     ctx.lineWidth = 5
     ctx.fillText("RESTART", start_x+rect_size*botton_x+(rect_size*2.2)/2, start_y+rect_size*(botton_y))
     ctx.fillRect(b_restart_list[0],b_restart_list[1],b_restart_list[2],b_restart_list[3])
-    
+    */
 
     /*
     // botton 1,10,9,8,7
@@ -283,7 +283,7 @@ function log(){
 button_start(b_s_list)
 button_state(b_state_list)
 button_reset(b_reset_list)
-button_restart(b_restart_list)
+//button_restart(b_restart_list)
 
 setInterval(log,period)
 setInterval(resize,period)
