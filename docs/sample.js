@@ -15,8 +15,10 @@ var h_scale
 var rect_size = 200
 var start_x = 100
 var start_y = 900
+var m_rect_size = 100
+var m_start_x = start_x+rect_size*3    
 var count = 0
-var base_x = start_x-(rect_size/2-(20+62.5)) // fontのhight 125
+var base_x = start_x-(rect_size/2-(20+62.5)) // fontのwidth 125
 var base_y = start_y-(rect_size/2+47.5) // fontのhight 95
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
 var period = (6.2 * 1000) / 256
@@ -26,16 +28,13 @@ var time_line = []
 var count_flag = false
 var botton_x = 0
 var botton_y = -2.4
-var state_flag = 0
-var x1
-var y1
-var width1
-var height1
-var b_s_list = [base_x+rect_size*botton_x,base_y+rect_size*(botton_y-1),rect_size*2.2,rect_size]
+var state_flag = -1 // -1:no input 0-9:state 10:lock
+var margin_x = 15
+var margin_y = 30
+var b_start_list = [base_x+rect_size*botton_x,base_y+rect_size*(botton_y-1),rect_size*2.2,rect_size]
 var b_state_list = [base_x+rect_size*(botton_x+3),base_y+rect_size*botton_y,rect_size*2.2,rect_size]
-var b_reset_list = [base_x+rect_size*botton_x,base_y+rect_size*(botton_y+0.2),(rect_size*2.2)/2,rect_size]
+var b_reset_list = [177.5-margin_x,450-65-margin_y,50*5+margin_x*2,65+margin_y*2]
 var b_restart_list = [base_x+rect_size*botton_x+(rect_size*2.2)/2,base_y+rect_size*(botton_y),(rect_size*2.2)/2,rect_size]
-//,x1,y1,width1,height1
     
 
 /*
@@ -67,21 +66,23 @@ function button_start(position){
         mouseY = (e.clientY - button.top) * h_scale
 		if(x < mouseX && mouseX < x + width){
 			if(y < mouseY && mouseY < y + height){
-                count_flag = true;
+                count_flag = true
                 count = 0
-                state_flag = 0
+                state_flag = -1
 			}
         }
         
     }, false);
 }
 
-function button_state(position){
+function button_state(position_and_num){
     var x
     var y
     var width
     var height
-    [x,y,width,height] = position
+    var state_num
+    [x,y,width,height] = position_and_num[0]
+    state_num = position_and_num[1]
 	canvas.addEventListener('click', function(e){
 		var button = e.target.getBoundingClientRect()
 	        
@@ -93,9 +94,9 @@ function button_state(position){
 		
         if(x < mouseX && mouseX < x + width){
 			if(y < mouseY && mouseY < y + height){
-				if(state_flag==0){
-					state_flag = 1
-                    console.log("state flag:",state_flag)
+				if(state_flag==-1){
+					state_flag = state_num
+                    console.log("state input!!:",state_num)
                 }	
 			}
         }
@@ -120,35 +121,10 @@ function button_reset(position){
 		
         if(x < mouseX && mouseX < x + width){
 			if(y < mouseY && mouseY < y + height){
-                state_flag = 0
+                state_flag = -1
                 count = 0
                 count_flag = 0
             
-			}
-        }
-        
-    }, false);
-}
-
-function button_restart(position){
-    var x
-    var y
-    var width
-    var height
-    [x,y,width,height] = position
-	canvas.addEventListener('click', function(e){
-		var button = e.target.getBoundingClientRect()
-	        
-        w_scale = global_width / button.width
-        h_scale = global_height / button.height
-        
-        mouseX = (e.clientX - button.left) * w_scale
-        mouseY = (e.clientY - button.top) * h_scale
-		
-        if(x < mouseX && mouseX < x + width){
-			if(y < mouseY && mouseY < y + height){
-                state_flag = 0
-                count = 0
 			}
         }
         
@@ -181,25 +157,26 @@ function resize() {
         ctx.rect(base_x+rect_size*i,base_y+rect_size,rect_size,rect_size)
         ctx.stroke()
     }
-    // coloring sample
     var count_line = time_line[count]
     var k = Math.floor(count_line / 5)
     var u = count_line % 5
+    
+    /*
+    // coloring sample
     ctx.font = '125px serif'
     ctx.lineWidth = 5
-    //console.log(figures[count_line])
     ctx.fillText(figures[count_line], start_x+rect_size*u, start_y+rect_size*(3+k))
     ctx.fillStyle = 'rgba(192,80,77,0.7)'
     ctx.fillRect(base_x+rect_size*u,base_y+rect_size*(3+k),rect_size,rect_size)
-    //ctx.fill()
-    
+    */
     // coloring timer
     if(count_flag){
-        if(state_flag > 0){
+        if(state_flag==10){
             ctx.fillStyle = 'rgba(12,180,177,0.6)'
             ctx.font = '125px serif'
             ctx.lineWidth = 5
             ctx.fillRect(base_x+rect_size*u,base_y+rect_size*k,rect_size,rect_size)
+            console.log(base_x+rect_size*u,base_y+rect_size*k,rect_size,rect_size)
         }
     }
     
@@ -210,49 +187,41 @@ function resize() {
     ctx.font = '125px serif'
     ctx.lineWidth = 5
     ctx.fillText("START", start_x+rect_size*botton_x, start_y+rect_size*(botton_y-1))
-    ctx.fillRect(b_s_list[0],b_s_list[1],b_s_list[2],b_s_list[3])
+    ctx.fillRect(b_start_list[0],b_start_list[1],b_start_list[2],b_start_list[3])
     
     // reset 
     ctx.fillStyle = 'rgba(32,180,177,0.6)'
-    ctx.font = '40px serif'
+    ctx.font = '80px serif'// width 50,height 65
     ctx.lineWidth = 5
-    ctx.fillText("RESET", start_x+rect_size*botton_x, start_y+rect_size*(botton_y))
-    ctx.fillRect(b_reset_list[0],b_reset_list[1],b_reset_list[2],b_reset_list[3])
-    // restart
-    /*
-    ctx.fillStyle = 'rgba(32,180,177,0.6)'
-    ctx.font = '40px serif'
-    ctx.lineWidth = 5
-    ctx.fillText("RESTART", start_x+rect_size*botton_x+(rect_size*2.2)/2, start_y+rect_size*(botton_y))
-    ctx.fillRect(b_restart_list[0],b_restart_list[1],b_restart_list[2],b_restart_list[3])
-    */
+    ctx.fillText("RESET", 177.5,450) 
+    ctx.fillRect(177.5-margin_x,450-65-margin_y,50*5+margin_x*2,65+margin_y*2)
 
-    /*
-    // botton 1,10,9,8,7
-    for(var i = 0; i<5 ; i++){
-        ctx.font = '125px serif'
-        ctx.lineWidth = 5
-        ctx.fillText(figures[i], start_x+rect_size*i, start_y)
-        ctx.rect(base_x+rect_size*i,base_y,rect_size,rect_size)
-        ctx.stroke()
-    }
-    
-    // botton 6,5,4,3,2
-    for(var i = 0; i<5 ; i++){
-        ctx.font = '125px serif'
-        ctx.lineWidth = 5
-        ctx.fillText(figures[i+5], start_x+rect_size*i, start_y+rect_size)
-        ctx.rect(base_x+rect_size*i,base_y+rect_size,rect_size,rect_size)
-        ctx.stroke()
-    }
-    */
     // botton state
     ctx.fillStyle = 'rgba(82,80,177,0.6)'
     ctx.font = '125px serif'
     ctx.lineWidth = 5
-    ctx.fillText("State", start_x+rect_size*(botton_x+3), start_y+rect_size*botton_y)
-    ctx.fillRect(b_state_list[0],b_state_list[1],b_state_list[2],b_state_list[3])
+    ctx.fillText("State", start_x+rect_size*(botton_x+3), b_start_list[1]+95)
+    //ctx.fillRect(b_state_list[0],b_state_list[1],b_state_list[2],b_state_list[3])
 
+    // botton 1,10,9,8,7,6,5,4,3
+    for(var j=0;j<3;j++){
+        for(var i = 0; i<3 ; i++){
+            ctx.fillStyle = 'rgba(0,0,0,1)'
+            ctx.font = '80px serif'
+            ctx.lineWidth = 5
+            ctx.fillText(figures[i+j*3], m_start_x+m_rect_size*i, 300+m_rect_size*j)
+            ctx.rect(m_start_x+m_rect_size*i,300-65-17.5+m_rect_size*j,m_rect_size,65+17.5*2)
+            ctx.stroke()
+        }
+    }
+    // botton 2
+    ctx.fillStyle = 'rgba(0,0,0,1)'
+    ctx.font = '80px serif'
+    ctx.lineWidth = 5
+    ctx.fillText(figures[9], m_start_x+m_rect_size*1, 300+m_rect_size*3)
+    ctx.rect(m_start_x+m_rect_size*1,300-65-17.5+m_rect_size*3,m_rect_size,65+17.5*2)
+    ctx.stroke()
+    
     // timer
     ctx.fillText(Math.floor(count*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))
     
@@ -262,9 +231,9 @@ function resize() {
 }
 
 function log(){
-    if(state_flag==1){
-        count += 128
-        state_flag = 2
+    if(state_flag>-1 && state_flag<10){
+        count += slot_time[state_flag]
+        state_flag = 10
         count %= 256
     }
     if(count_flag){
@@ -279,11 +248,18 @@ function log(){
         count = 0
     }
 }
-/**/
-button_start(b_s_list)
-button_state(b_state_list)
+// button flag settings
+button_start(b_start_list)
 button_reset(b_reset_list)
-//button_restart(b_restart_list)
+// state button setting
+for(var j=0;j<3;j++){
+    for(var i = 0; i<3 ; i++){
+        var p_list = [m_start_x+m_rect_size*i,300-65-17.5+m_rect_size*j,m_rect_size,65+17.5*2]
+        button_state([p_list,i+j*3])
+    }
+}
+var p_list = [m_start_x+m_rect_size*1,300-65-17.5+m_rect_size*3,m_rect_size,65+17.5*2]
+button_state([p_list,9])
 
 setInterval(log,period)
 setInterval(resize,period)
