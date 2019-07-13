@@ -23,7 +23,8 @@ var base_y = start_y-(rect_size/2+47.5) // fontのhight 95
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
 var period = (6.2 * 1000) / 256
 var now_period
-var slot_time = [64,3,11,13,13,25,25,25,38,39] // 1,10,9,8,7,6,5,4,3,2
+var base_time = [64,3,11,13,13,25,25,25,38,39] // 1,10,9,8,7,6,5,4,3,2
+var slot_time = [0] // 状態が1なら補正無しなので
 var time_line = []
 var count_flag = false
 var botton_x = 0
@@ -36,19 +37,24 @@ var b_state_list = [base_x+rect_size*(botton_x+3),base_y+rect_size*botton_y,rect
 var b_reset_list = [177.5-margin_x,450-65-margin_y,50*5+margin_x*2,65+margin_y*2]
 var b_restart_list = [base_x+rect_size*botton_x+(rect_size*2.2)/2,base_y+rect_size*(botton_y),(rect_size*2.2)/2,rect_size]
     
-
-/*
-var time_line = [0,0,0,0,0,
-                 1,1,1,1,2,
-                 2,2,3,3,4]
-
-*/
+// make_timeline
 for(var i=0;i<10;i++){
-    now_period = slot_time[i]
+    now_period = base_time[i]
     for(var k=0;k<now_period;k++){
         time_line.push(i)
     }
 }
+// make slot time
+var sum
+for(var i=1;i<10;i++){
+    sum = 0
+    for(var j=0;j<i;j++){
+        sum += base_time[j]
+    }
+    slot_time.push(sum)
+}
+console.log(base_time)
+console.log(slot_time)
 
 function button_start(position){
     var x
@@ -238,7 +244,7 @@ function log(){
     }
     if(count_flag){
         count += 1
-        //console.log(count)
+        console.log(count)
         
         if (count >255){
             count = 0
