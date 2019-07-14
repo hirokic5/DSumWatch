@@ -18,6 +18,7 @@ var start_y = 900
 var m_rect_size = 100
 var m_start_x = start_x+rect_size*3    
 var count = 0
+var count_time = 0
 var base_x = start_x-(rect_size/2-(20+62.5)) // fontのwidth 125
 var base_y = start_y-(rect_size/2+47.5) // fontのhight 95
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
@@ -74,6 +75,7 @@ function button_start(position){
 			if(y < mouseY && mouseY < y + height){
                 count_flag = true
                 count = 0
+                count_time = 0
                 state_flag = -1
 			}
         }
@@ -229,7 +231,7 @@ function resize() {
     ctx.stroke()
     
     // timer
-    ctx.fillText(Math.floor(count*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))
+    ctx.fillText(Math.floor(count_time*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))
     
     
     // scale 
@@ -245,13 +247,14 @@ function log(){
     if(count_flag){
         count += 1
         console.log(count)
-        
+        count_time += 1
         if (count >255){
             count = 0
         }
     }
     else{
         count = 0
+        count_time = 0
     }
 }
 // button flag settings
