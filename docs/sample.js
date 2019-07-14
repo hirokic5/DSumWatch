@@ -194,6 +194,7 @@ function resize() {
         ctx.stroke()
     }
     var count_line = time_line[count]
+    console.log("count:",count,"count_line",count_line)
     var k = Math.floor(count_line / 5)
     var u = count_line % 5
     
@@ -286,7 +287,7 @@ function log(){
             count_time += 1
             }
         else{
-            count -= 1
+            count += 1
             count_time += 1
         }
         if (count >255){
