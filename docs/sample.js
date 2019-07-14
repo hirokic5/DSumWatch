@@ -25,7 +25,7 @@ var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
 var period = (6.2 * 1000) / 256
 var now_period
 var base_time = [64,3,11,13,13,25,25,25,38,39] // 1,10,9,8,7,6,5,4,3,2
-var slot_time = [0] // 状態が1なら補正無しなので
+var slot_time = [32] // 状態が1なら補正無しなので->真ん中にしたい
 var time_line = []
 var count_flag = false
 var botton_x = 0
@@ -56,6 +56,7 @@ for(var i=1;i<10;i++){
     for(var j=0;j<i;j++){
         sum += base_time[j]
     }
+    sum += base_time[i] /2
     slot_time.push(sum)
 }
 console.log(base_time)
