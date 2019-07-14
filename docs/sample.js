@@ -282,11 +282,11 @@ function log(){
     if(count_flag){
         console.log(count)
         if(!battle_flag){
-            count -= 1
+            count += 1
             count_time += 1
             }
         else{
-            count += 1
+            count -= 1
             count_time += 1
         }
         if (count >255){
