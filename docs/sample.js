@@ -286,7 +286,7 @@ function log(){
             count_time += 1
             }
         else{
-            count -= 3
+            count -= 1
             console.log("battle:",count)
         
             //count = Math.floor(count)
