@@ -35,8 +35,12 @@ var margin_x = 15
 var margin_y = 30
 var b_start_list = [base_x+rect_size*botton_x,base_y+rect_size*(botton_y-1),rect_size*2.2,rect_size]
 var b_state_list = [base_x+rect_size*(botton_x+3),base_y+rect_size*botton_y,rect_size*2.2,rect_size]
-var b_reset_list = [177.5-margin_x,450-65-margin_y,50*5+margin_x*2,65+margin_y*2]
+var reset_captial_position = [177.5,550]
+var b_reset_list = [reset_captial_position[0]-margin_x,reset_captial_position[1]-65-margin_y,50*5+margin_x*2,65+margin_y*2]
 var b_restart_list = [base_x+rect_size*botton_x+(rect_size*2.2)/2,base_y+rect_size*(botton_y),(rect_size*2.2)/2,rect_size]
+var be_captial_position = [177.5,400]
+var b_be_list = [be_captial_position[0]-margin_x,be_captial_position[1]-65-margin_y,50*5+margin_x*2,65+margin_y*2]
+var battle_flag = 1
     
 // make_timeline
 for(var i=0;i<10;i++){
@@ -65,7 +69,6 @@ function button_start(position){
     [x,y,width,height] = position
 	canvas.addEventListener('click', function(e){
 		var button = e.target.getBoundingClientRect()
-	        
         w_scale = global_width / button.width
         h_scale = global_height / button.height
         
@@ -77,6 +80,58 @@ function button_start(position){
                 count = 0
                 count_time = 0
                 state_flag = -1
+                battle_flag = 1 // battle start
+			}
+        }
+        
+    }, false);
+}
+
+function button_BattleEnd(position){
+    var x
+    var y
+    var width
+    var height
+    [x,y,width,height] = position
+	canvas.addEventListener('click', function(e){
+		var button = e.target.getBoundingClientRect()
+	        
+        w_scale = global_width / button.width
+        h_scale = global_height / button.height
+        
+        mouseX = (e.clientX - button.left) * w_scale
+        mouseY = (e.clientY - button.top) * h_scale
+		
+        if(x < mouseX && mouseX < x + width){
+			if(y < mouseY && mouseY < y + height){
+                battle_flag = 0 //battle end
+			}
+        }
+        
+    }, false);
+}
+
+function button_reset(position){
+    var x
+    var y
+    var width
+    var height
+    [x,y,width,height] = position
+	canvas.addEventListener('click', function(e){
+		var button = e.target.getBoundingClientRect()
+	        
+        w_scale = global_width / button.width
+        h_scale = global_height / button.height
+        
+        mouseX = (e.clientX - button.left) * w_scale
+        mouseY = (e.clientY - button.top) * h_scale
+		
+        if(x < mouseX && mouseX < x + width){
+			if(y < mouseY && mouseY < y + height){
+                state_flag = -1
+                count = 0
+                count_flag = 0
+            
 			}
         }
         
@@ -106,33 +161,6 @@ function button_state(position_and_num){
 					state_flag = state_num
                     console.log("state input!!:",state_num)
                 }	
-			}
-        }
-        
-    }, false);
-}
-
-function button_reset(position){
-    var x
-    var y
-    var width
-    var height
-    [x,y,width,height] = position
-	canvas.addEventListener('click', function(e){
-		var button = e.target.getBoundingClientRect()
-	        
-        w_scale = global_width / button.width
-        h_scale = global_height / button.height
-        
-        mouseX = (e.clientX - button.left) * w_scale
-        mouseY = (e.clientY - button.top) * h_scale
-		
-        if(x < mouseX && mouseX < x + width){
-			if(y < mouseY && mouseY < y + height){
-                state_flag = -1
-                count = 0
-                count_flag = 0
-            
 			}
         }
         
@@ -197,12 +225,19 @@ function resize() {
     ctx.fillText("START", start_x+rect_size*botton_x, start_y+rect_size*(botton_y-1))
     ctx.fillRect(b_start_list[0],b_start_list[1],b_start_list[2],b_start_list[3])
     
+    // battle end
+    ctx.fillStyle = 'rgba(32,70,177,0.6)'
+    ctx.font = '80px serif'// width 50,height 65
+    ctx.lineWidth = 5
+    ctx.fillText("B-END", be_captial_position[0],be_captial_position[1]) 
+    ctx.fillRect(b_be_list[0],b_be_list[1],b_be_list[2],b_be_list[3])
+
     // reset 
     ctx.fillStyle = 'rgba(32,180,177,0.6)'
     ctx.font = '80px serif'// width 50,height 65
     ctx.lineWidth = 5
-    ctx.fillText("RESET", 177.5,450) 
-    ctx.fillRect(177.5-margin_x,450-65-margin_y,50*5+margin_x*2,65+margin_y*2)
+    ctx.fillText("RESET", reset_captial_position[0],reset_captial_position[1]) 
+    ctx.fillRect(b_reset_list[0],b_reset_list[1],b_reset_list[2],b_reset_list[3])
 
     // botton state
     ctx.fillStyle = 'rgba(82,80,177,0.6)'
@@ -245,12 +280,22 @@ function log(){
         count %= 256
     }
     if(count_flag){
-        count += 1
-        console.log(count)
-        count_time += 1
-        if (count >255){
-            count = 0
+        if(!battle_flag){
+            count += 1
+            console.log(count)
+            count_time += 1
+            if (count >255){
+                count = 0}
+            }
+        else{
+            count -= 1
+            console.log(count)
+            count_time += 1
+            if (count < 0 ){
+                count = 255
         }
+        }
+        
     }
     else{
         count = 0
@@ -259,6 +304,7 @@ function log(){
 }
 // button flag settings
 button_start(b_start_list)
+button_BattleEnd(b_be_list)
 button_reset(b_reset_list)
 // state button setting
 for(var j=0;j<3;j++){
@@ -278,5 +324,3 @@ setInterval(resize,period)
 resize()
 window.addEventListener('resize', resize)
 window.addEventListener('orientationchange', resize)
-
-
