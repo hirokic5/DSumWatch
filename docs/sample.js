@@ -193,7 +193,7 @@ function resize() {
         ctx.rect(base_x+rect_size*i,base_y+rect_size,rect_size,rect_size)
         ctx.stroke()
     }
-    var count_line = time_line[count]
+    var count_line = time_line[Math.floor(count)]
     console.log("count:",count,"count_line",count_line)
     var k = Math.floor(count_line / 5)
     var u = count_line % 5
@@ -281,13 +281,15 @@ function log(){
         count %= 256
     }
     if(count_flag){
-        console.log(count)
         if(!battle_flag){
             count += 1
             count_time += 1
             }
         else{
-            count += 1
+            count -= (1/3)
+            console.log("battle:",count)
+        
+            //count = Math.floor(count)
             count_time += 1
         }
         if (count >255){
