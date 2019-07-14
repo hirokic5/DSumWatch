@@ -280,16 +280,15 @@ function log(){
         count %= 256
     }
     if(count_flag){
+        console.log(count)
         if(!battle_flag){
             count += 1
-            console.log(count)
             count_time += 1
             if (count >255){
                 count = 0}
             }
         else{
-            count -= 1
-            console.log(count)
+            count -= 2
             count_time += 1
             if (count < 0 ){
                 count = 255
