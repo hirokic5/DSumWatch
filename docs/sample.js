@@ -3,9 +3,6 @@
  * ルーレットの作成
  * ------------------------------
  */
-var drawing = false
-var last_x = null
-var last_y = null
 var canvas = document.getElementById('stage')
 var ctx = canvas.getContext('2d')
 var global_width
