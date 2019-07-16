@@ -299,9 +299,13 @@ function resize() {
         m_rect_size,m_rect_size)
     ctx.stroke()
     
-    // timer
+    // timer for battle time
     //ctx.fillText(Math.floor(count_time*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))
     ctx.fillText(Math.floor(battle_time*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))    
+    
+    // timer after battle 
+    //ctx.fillText(Math.floor(count_time*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))
+    ctx.fillText(Math.floor((count_time-battle_time)*period/100)/10+"s", start_x+rect_size*(botton_x+2), start_y+rect_size*(botton_y+1.3))    
     
     // scale 
     ctx.scale(2, 2)
