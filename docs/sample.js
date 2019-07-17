@@ -164,7 +164,7 @@ function button_reset(position){
                 state_flag = -1
                 count = 0
                 count_flag = 0
-            
+                battle_time = 0
 			}
         }
         
@@ -323,7 +323,7 @@ function log(){
             count_time += 1
             }
         else{ // battle
-            count -= 1
+            count -= 1/2
             console.log("battle:",count)
         
             //count = Math.floor(count)
