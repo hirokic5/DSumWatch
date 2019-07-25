@@ -13,7 +13,8 @@ var h_scale
 
 // timer params
 var now_period
-var period = (6.2 * 1000) / 256
+var cycle_time = 6.5
+var period = (cycle_time * 1000) / 256
 
 var count = 0
 var count_time = 0
