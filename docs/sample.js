@@ -248,6 +248,7 @@ function button_timer(position_and_num){
                         street_time = Math.floor(street_time) + state_num / 10
                     }
                     street_time = Math.floor(street_time*10) / 10
+                    timer_speed = 1 * (cycle_time / street_time)
                 }   
 			}
         }
