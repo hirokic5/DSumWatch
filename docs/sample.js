@@ -449,6 +449,16 @@ function resize() {
                 ctx.stroke()
             }
         }
+        // botton 0
+        ctx.fillStyle = 'rgba(0,0,0,1)'
+        ctx.font = '80px serif'
+        ctx.lineWidth = 5
+        ctx.fillText(" 0", m2_start_x+m_rect_size*1, c_start_y+m_rect_size*3)
+        ctx.rect(
+            m2_start_x+m_rect_size*1,
+            c_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*3,
+            m_rect_size,m_rect_size)
+        ctx.stroke()
     }
 
     // timer for battle time
@@ -538,6 +548,11 @@ for(var j=0;j<3;j++){
         button_timer([p_list,i+j*3+1,0])
     }
 }
+var p_list = [
+    m2_start_x+m_rect_size*1,
+    c_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*3,
+    m_rect_size,m_rect_size]
+button_timer([p_list,0,0])
 button_cycle([b_change_list,1])
 button_cycle([b_fix_list,0])
 
