@@ -14,7 +14,10 @@ var h_scale
 // timer params
 var now_period
 var cycle_time = 6.5
+var street_time = 6.5
 var period = (cycle_time * 1000) / 256
+var timer_speed = 1 * (cycle_time / street_time)
+
 
 var count = 0
 var count_time = 0
@@ -29,7 +32,7 @@ var battle_flag = 1 // 1 : battle or init state 0 : battle end
 
 // position params : start & slot numbers
 var rect_size = 200
-var start_x = 100
+var start_x = 900
 var start_y = 900
 
 var capitalSize_125 = [62.5,47.5] // width/2,height/2
@@ -54,7 +57,7 @@ var m_start_y = 300
 var margin_x = 15
 var margin_y = 30
 
-var reset_captial_position = [177.5,550]
+var reset_captial_position = [start_x+77.5,550]
 var b_reset_list = [
     reset_captial_position[0]-margin_x,
     reset_captial_position[1]-capitalSize_80[1]-margin_y,
@@ -66,13 +69,27 @@ var b_restart_list = [
     (rect_size*2.2)/2,
     rect_size]
 
-var be_captial_position = [177.5,400]
+var be_captial_position = [start_x+77.5,400]
 var b_be_list = [
     be_captial_position[0]-margin_x,
     be_captial_position[1]-capitalSize_80[1]-margin_y,
     capitalSize_80[0]*5+margin_x*2,
     capitalSize_80[1]+margin_y*2]
 
+// cycle change params
+var timer_change = 1
+var c_start_x = 30
+var c_start_y = m_start_y + 300
+var m1_start_x = c_start_x
+var m2_start_x = c_start_x+rect_size*2    
+var b_change_list = [
+    m1_start_x,b_start_list[1]+95+210,
+    350,100
+]
+var b_fix_list = [
+    m2_start_x,b_start_list[1]+95+210,
+    150,100
+]
     
 // make_timeline
 for(var i=0;i<10;i++){
@@ -201,6 +218,76 @@ function button_state(position_and_num){
     }, false);
 }
 
+function button_timer(position_and_num){
+    var x
+    var y
+    var width
+    var height
+    var state_num
+    var digit
+    [x,y,width,height] = position_and_num[0]
+    state_num = position_and_num[1]
+    digit = position_and_num[2] 
+	canvas.addEventListener('click', function(e){
+		var button = e.target.getBoundingClientRect()
+	        
+        w_scale = global_width / button.width
+        h_scale = global_height / button.height
+        
+        mouseX = (e.clientX - button.left) * w_scale
+        mouseY = (e.clientY - button.top) * h_scale
+		
+        if(x < mouseX && mouseX < x + width){
+			if(y < mouseY && mouseY < y + height){
+                if(timer_change){
+                    // flagはあとで考えます
+                    if (digit){
+                        street_time = street_time-Math.floor(street_time)+state_num
+                    }
+                    else{
+                        street_time = Math.floor(street_time) + state_num / 10
+                    }
+                    street_time = Math.floor(street_time*10) / 10
+                }   
+			}
+        }
+        
+    }, false);
+}
+
+/**/
+function button_cycle(position_and_num){
+    var x
+    var y
+    var width
+    var height
+    var state_num
+    [x,y,width,height] = position_and_num[0]
+    state_num = position_and_num[1]
+    canvas.addEventListener('click', function(e){
+		var button = e.target.getBoundingClientRect()
+	        
+        w_scale = global_width / button.width
+        h_scale = global_height / button.height
+        
+        mouseX = (e.clientX - button.left) * w_scale
+        mouseY = (e.clientY - button.top) * h_scale
+		
+        if(x < mouseX && mouseX < x + width){
+			if(y < mouseY && mouseY < y + height){
+                if(state_num){
+                    timer_change= 1
+                 
+                }
+                else{
+                    timer_change = 0
+                }   
+			}
+        }
+    }, false);
+}
+    
+
 function resize() {
     canvas.setAttribute('width', window.innerWidth*2)
     canvas.setAttribute('height', window.innerHeight*2)
@@ -300,6 +387,69 @@ function resize() {
         m_rect_size,m_rect_size)
     ctx.stroke()
     
+    
+    /**/
+    // timer_speed sample
+    // botton state
+    ctx.fillStyle = 'rgba(82,80,177,0.6)'
+    ctx.font = '125px serif'
+    ctx.lineWidth = 5
+    ctx.fillText("Cycle:"+street_time, c_start_x+m_rect_size*1, b_start_list[1]+95)
+    //ctx.fillRect(b_state_list[0],b_state_list[1],b_state_list[2],b_state_list[3])
+
+
+    // botton change 
+    ctx.fillStyle = 'rgba(82,80,177,0.6)'
+    ctx.font = '95px serif'
+    ctx.lineWidth = 5
+    ctx.fillText("Change", m1_start_x, b_start_list[1]+95+300)
+    ctx.fillRect(b_change_list[0],b_change_list[1],b_change_list[2],b_change_list[3])
+    
+    /**/
+
+    // botton fix
+    ctx.fillStyle = 'rgba(82,80,177,0.6)'
+    ctx.font = '95px serif'
+    ctx.lineWidth = 5
+    ctx.fillText("Fix", m2_start_x, b_start_list[1]+95+300)
+    ctx.fillRect(b_fix_list[0],b_fix_list[1],b_fix_list[2],b_fix_list[3])
+    
+    /**/
+   
+    if(timer_change){
+        // botton 1-9
+        for(var j=0;j<3;j++){
+            for(var i = 0; i<3 ; i++){
+                ctx.fillStyle = 'rgba(0,0,0,1)'
+                ctx.font = '80px serif'
+                ctx.lineWidth = 5
+                var num1 = i+j*3+1
+                ctx.fillText(" "+num1, m1_start_x+m_rect_size*i, c_start_y+m_rect_size*j)
+                ctx.rect(
+                    m1_start_x+m_rect_size*i,
+                    c_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*j,
+                    m_rect_size,m_rect_size)
+                ctx.stroke()
+            }
+        }
+        
+        // botton 1-9
+        for(var j=0;j<3;j++){
+            for(var i = 0; i<3 ; i++){
+                ctx.fillStyle = 'rgba(0,0,0,1)'
+                ctx.font = '80px serif'
+                ctx.lineWidth = 5
+                var num2 = i+j*3+1
+                ctx.fillText(" "+num2, m2_start_x+m_rect_size*i, c_start_y+m_rect_size*j)
+                ctx.rect(
+                    m2_start_x+m_rect_size*i,
+                    c_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*j,
+                    m_rect_size,m_rect_size)
+                ctx.stroke()
+            }
+        }
+    }
+
     // timer for battle time
     //ctx.fillText(Math.floor(count_time*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))
     ctx.fillText(Math.floor(battle_time*period/100)/10+"s", start_x+rect_size*botton_x, start_y+rect_size*(botton_y+1.3))    
@@ -320,8 +470,9 @@ function log(){
     }
     if(count_flag){
         if(!battle_flag){ // not battle
-            count += 1
+            count += timer_speed
             count_time += 1
+            console.log(count)
             }
         else{ // battle
             count -= 1/2
@@ -365,6 +516,29 @@ var p_list = [
     m_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*3,
     m_rect_size,m_rect_size]
 button_state([p_list,9])
+
+/**/
+// street timer
+for(var j=0;j<3;j++){
+    for(var i = 0; i<3 ; i++){
+        var p_list = [
+            m1_start_x+m_rect_size*i,
+            c_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*j,
+            m_rect_size,m_rect_size]
+        button_timer([p_list,i+j*3+1,1])
+    }
+}
+for(var j=0;j<3;j++){
+    for(var i = 0; i<3 ; i++){
+        var p_list = [
+            m2_start_x+m_rect_size*i,
+            c_start_y-capitalSize_80[1]-m_margin_y+m_rect_size*j,
+            m_rect_size,m_rect_size]
+        button_timer([p_list,i+j*3+1,0])
+    }
+}
+button_cycle([b_change_list,1])
+button_cycle([b_fix_list,0])
 
 // loop drawing per period
 setInterval(log,period)
