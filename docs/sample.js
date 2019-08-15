@@ -77,7 +77,7 @@ var b_be_list = [
     capitalSize_80[1]+margin_y*2]
 
 // cycle change params
-var timer_change = 1
+var timer_change = 0
 var c_start_x = 30
 var c_start_y = m_start_y + 300
 var m1_start_x = c_start_x
