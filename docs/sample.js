@@ -15,7 +15,8 @@ var h_scale
 var now_period
 var cycle_time = 6.5
 var street_time = 6.5
-var period = (cycle_time * 1000) / 256
+var cycle_length = 64
+var period = (cycle_time * 1000) / cycle_length
 var timer_speed = 1 * (cycle_time / street_time)
 
 
@@ -23,8 +24,10 @@ var count = 0
 var count_time = 0
 var battle_time = 0
 var figures = [" 1","10"," 9"," 8"," 7"," 6"," 5"," 4"," 3"," 2"]
-var base_time = [64,3,11,13,13,25,25,25,38,39] // 1,10,9,8,7,6,5,4,3,2
-var slot_time = [32] // 状態が1なら補正無しなので->真ん中にしたい
+// 補正 [64,4,12,12,12,24,24,24,40,40]
+// 原典 [64,3,11,13,13,25,25,25,38,39]
+var base_time = [16,1,3,3,3,6,6,6,10,10] // 1,10,9,8,7,6,5,4,3,2
+var slot_time = [8] // 状態が1なら補正無しなので->真ん中にしたい
 var time_line = []
 var count_flag = false
 var state_flag = -1 // -1:no input 0-9:state 10:lock
@@ -477,7 +480,7 @@ function log(){
     if(state_flag>-1 && state_flag<10){
         count += slot_time[state_flag]
         state_flag = 10
-        count %= 256
+        count %= cycle_length
     }
     if(count_flag){
         if(!battle_flag){ // not battle
@@ -493,11 +496,11 @@ function log(){
             count_time += 1
             battle_time += 1
         }
-        if (count >255){
+        if (count >cycle_length-1){
             count = 0}
         
         if (count < 0){
-            count = 255
+            count = cycle_length-1
         }
         
     }
